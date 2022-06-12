@@ -1,0 +1,90 @@
+https://leetcode.com/problems/word-search/
+
+
+//Approach 1
+
+class Solution {
+public:
+    int dx[4] = {0,1,0,-1};
+    int dy[4] = {1,0,-1,0};
+    
+    
+    bool dfs(vector<vector<char>>&board, string &word, int k, int x, int y, int &row, int &col)
+    {
+        //if the count of ize of grid that is visited is equals to word size then we got the word in board so return true
+        if(k == word.size())return true;
+        //validity check
+        if(x<0 || x>=row || y<0 || y>=col || board[x][y]=='@' || word[k] != board[x][y])return false;
+        
+        //store the  prev characters so that when we back track we mark them as unvisited, so after storing mark the grid with any delimeter
+        char ch = board[x][y];
+        board[x][y] = '@';
+        
+        //iterate over all 4 directions
+        for(int i=0;i<4;i++)
+        {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            
+            //keep on incrementing k and traverse in 4 directions
+            if(dfs(board,word,k+1,nx,ny,row,col))return true;
+        }
+        //back track is done here
+        board[x][y] = ch;
+        return false;
+    }
+    
+    bool exist(vector<vector<char>>& board, string word) {
+    int row = board.size();
+    int col = board[0].size();
+    
+    int k = 0;
+    for(int i=0;i<row;i++)
+    {
+        for(int j=0;j<col;j++)
+        {
+            // dfs will only be called if the character present in word matches the characters present in board
+            if(word[0] == board[i][j] && dfs(board,word,k,i,j,row,col))return true;
+        }
+    }
+    return false;
+    }
+};
+
+
+//Approach 2
+class Solution {
+public:
+    
+    bool solve(vector<vector<char>>& board,int i, int j,int m,int n,string word, int k){
+        if(k==word.size()){
+            return true;
+        }
+        if(i < 0 || i == m || j < 0 || j == n  || board[i][j] == '0'  ||  board[i][j] != word[k]){
+            return false;
+        }
+        
+            char temp=board[i][j];
+            board[i][j]='0';
+            if((solve(board,i+1,j,m,n,word,k+1) || solve(board,i-1,j,m,n,word,k+1) || solve(board,i,j+1,m,n,word,k+1) || solve(board,i,j-1,m,n,word,k+1))){
+                return true;
+            }
+            //backtracking
+             board[i][j]=temp;
+             return false;
+    }
+    
+    bool exist(vector<vector<char>>& board, string word) {
+        int m=board.size();
+        int n=board[0].size();
+        int k=0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(solve(board,i,j,m,n,word,k)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
