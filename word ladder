@@ -1,0 +1,67 @@
+https://leetcode.com/problems/word-ladder/submissions/
+
+
+class Solution {
+public:
+    /*APPROACH:
+    1.firstly check whether the endword is present in the wordlist or not if not present then return 0 for it.
+    2.form a graph in such a way that the first node is the beginword and the last node will be endword.
+    3.for each node transorm its one character and then check whether that word is present in the wordlist or not
+    4.By performing 1,2,3 steps we will be able to create a graph */
+        
+    /*ALGORITHM:
+    we have to perfrom BFS to traverse the graph
+    1.insert the beignword to queue
+    2.for traversing each negihbor in queue we increase the depth by 1
+    3.then we replace each character from the front of the queue an check it with end word if present in the set then we return depth+1 else we insert the transformed word            in the queue and remove the transofrmed word from the wordlist*/
+        
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList)
+    {
+        //if we have not found endword in the wordlist then we return 0 
+        if(find(wordList.begin(),wordList.end(),endWord)==wordList.end())return 0;
+        
+        //unordered_set takes O(1) to find and erase
+        unordered_set<string> s;
+        for(auto it:wordList)s.insert(it);
+        
+        queue<string> q;
+        q.push(beginWord);
+        //depth will give the shortest transformation sequence
+        int d=0;
+        
+        while(!q.empty())
+        {
+            //to get how many words did we move
+            d++;
+            //to know that for how many next words - we can go on loop
+            int size=q.size();
+            while(size--)
+            {
+                string curr=q.front();
+                q.pop();
+                for(int i=0;i<curr.length();i++)
+                {
+                    string tmp=curr;
+                    for(char c='a';c<='z';c++)
+                    {
+                        //substituting each letter in word with another letter
+                        tmp[i]=c;
+                        if(tmp==curr)
+                            continue;
+                        //if end is found - return answer which is d+1
+                        if(tmp==endWord)
+                            return d+1;
+                        //if modified word is present in wordset, put it queue to be processed
+                        //if that modeifed word is not same as endword then erase it from queue
+                        if(s.find(tmp)!=s.end())
+                        {
+                            q.push(tmp);
+                            s.erase(tmp);
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+};
