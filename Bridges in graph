@@ -1,29 +1,36 @@
 //https://www.codingninjas.com/codestudio/problems/bridges-in-graph_893026?leftPanelTab=1&utm_source=youtube&utm_medium=affiliate&utm_campaign=Lovebabbar
 
 
-#include<bits/stdc++.h>
 void dfs(int node, int parent, vector<int> &vis, vector<int> &tin, vector<int> &low, int &timer, vector<int> adj[],vector<vector<int>>&ans) {
+//step 4: mark the node for which dfs call has been made
     vis[node] = 1; 
+//step 5: every time node is visited we increment timer for time of insertion and low[node] simultaneously
     tin[node] = low[node] = timer++; 
+//step 5: iterate over all the adjacent node
     for(auto it: adj[node]) {
+//step 6: if the iterator is equal to its parent that means we are going backward so no need to do dfs call for it so continue
         if(it == parent) continue;
-        
+//step 7: if node is not visited firstly make dfs call for it then find the minimum of low[node] and low[it] and thus update low[node] 
         if(!vis[it]) {
             dfs(it, node, vis, tin, low, timer, adj,ans); 
             low[node] = min(low[node], low[it]); 
+//step 8: if low[it] > tin[node] that means bridge exist between the two nodes so push it to ans vector
             if(low[it] > tin[node]) {
                  vector<int> ds;
                 ds.push_back(node);
                 ds.push_back(it);
                 ans.push_back(ds);
             }
-        } else {
+        }
+//step 9: if node is already visted then update low[node] with minimum of low[node] and tin[it]
+        else {
             low[node] = min(low[node], tin[it]); 
         }
     }
 }
 vector<vector<int>> findBridges(vector<vector<int>> &edges, int n, int m) {
-//     Write your code here
+//     here n,m -> number of nodes and number of edges
+//step 1 : make adjacency list 
     vector<int>adj[n];
     for(int i=0;i<m;i++){
         int u=edges[i][0];
@@ -32,15 +39,17 @@ vector<vector<int>> findBridges(vector<vector<int>> &edges, int n, int m) {
         adj[v].push_back(u);
     }
     
-
+//step 2: we require 3 arrays(visited, time of insertion, lowest time) also parent will be initailly -1 for starting node and thus timer will be zero
     vector<vector<int>>ans;
     vector<int>vis(n,0);
      vector<int>tin(n,-1);
      vector<int>low(n,-1);
+    int parent = -1;
     int timer=0;
+//step 3: iterate till all the nodes only if they  are not visited thus make dfs call for them
     for(int i=0;i<n;i++){
         if(!vis[i]){
-                dfs(i,-1, vis, tin, low, timer, adj,ans);
+                dfs(i,parent, vis, tin, low, timer, adj,ans);
         }
     }
 
