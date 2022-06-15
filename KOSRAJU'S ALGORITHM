@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+/*KOSRAJUS ALGORITHM(used to find strongly connected components in directed graph)
+
+STEP:1 sort all nodes in order of finishing time(i.e. oerfrom toposort)
+STEP:2 Transpose the graph
+STEP:3 Perfrom DFS according to finish time */
+
+/*input: 
+5 5 
+1 0
+0 2
+2 1
+0 3
+3 4 
+
+output:
+0 1 2
+3
+4*/
+
+//This is the dfs for toposort
+void dfs(int node,stack<int> &st,vector<int> adj[],vector<int> &vis){
+    vis[node] = 1;
+    for(auto it: adj[node]){
+        if(!vis[it]){
+            dfs(it,st,adj,vis);
+        }
+    }
+    st.push(node);
+}
+
+//This is the dfs for finishing time
+void reverseDfs(int node,vector<int> &vis, vector<int> transpose[]){
+    cout<<node<<" ";
+    vis[node] = 1;
+    for(auto it: transpose[node]){
+        if(!vis[it]){
+            reverseDfs(it,vis,transpose);
+        }
+    }
+}
+
+int main(){
+    //Taking all the required inputs since its a directed graph
+    int n,m;
+    cin>>n>>m;
+    vector<int>adj[n];
+    for(int i=0;i<m;i++){
+        int u,v;
+        cin>>u>>v;
+        adj[u].push_back(v);
+    }
+    //perfroming topological sort
+    stack<int>st;
+    vector<int>vis(n,0);
+    for(int i=0;i<n;i++){
+        if(!vis[i]){
+            dfs(i,st,adj,vis);
+        }
+    }
+    //Transposing th graph
+    vector<int>transpose[n];
+    for(int i=0;i<n;i++){
+        vis[i] = 0;
+        for(auto it: adj[i]){
+            transpose[it].push_back(i);
+        }
+    }
+    //DFS according to the finishing time
+    while(!st.empty()){
+        int node = st.top();
+        st.pop();
+        if(!vis[node]){
+            cout<<"strongly connected components are: ";
+            reverseDfs(node,vis,transpose);
+            cout<<endl;
+        }
+    }
+    return 0;
+}
