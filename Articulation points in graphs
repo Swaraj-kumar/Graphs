@@ -1,3 +1,5 @@
+//This code is exact same as finding bridges in graphs just the condition is changed a bit
+
 #include <bits/stdc++.h>
 using namespace std;
 void dfs(int node, int parent, vector<int> &vis, vector<int> &tin, vector<int> &low, int &timer, vector<int> adj[], vector<int> &isArticulation) {
@@ -10,7 +12,7 @@ void dfs(int node, int parent, vector<int> &vis, vector<int> &tin, vector<int> &
         if(!vis[it]) {
             dfs(it, node, vis, tin, low, timer, adj, isArticulation); 
             low[node] = min(low[node], low[it]); 
-	        child++; 
+	    child++; 
             if(low[it] >= tin[node] && parent != -1) {
                 isArticulation[node] = 1; 
             }
@@ -33,6 +35,33 @@ int main() {
 	    adj[u].push_back(v);
 	    adj[v].push_back(u); 
 	}
+	
+	vector<int> tin(n, -1);
+	vector<int> low(n, -1); 
+	vector<int> vis(n, 0);
+	vector<int> isArticulation(n, 0); 
+	int timer = 0; 
+	for(int i = 0;i<n;i++) {
+	    if(!vis[i]) {
+	        dfs(i, -1, vis, tin, low, timer, adj, isArticulation); 
+	    }
+	}
+	cout<<"articulation points are: ";
+	for(int i = 0;i<n;i++) {
+	    if(isArticulation[i] == 1) cout <<" "<< i;
+	}
+//inputs	
+// 	5 5
+// 	0 3
+//  3 4 
+//  0 4
+//  0 1
+//  1 2
+
+// output:0 1
+	return 0;
+}
+
 	
 	vector<int> tin(n, -1);
 	vector<int> low(n, -1); 
