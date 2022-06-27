@@ -1,0 +1,74 @@
+https://www.geeksforgeeks.org/minimum-time-taken-by-each-job-to-be-completed-given-by-a-directed-acyclic-graph/
+
+// question->Minimum time taken by each job to be completed given by a Directed Acyclic Graph
+/*algorithm:
+1.Create an array inDegree[] to store the count of the dependent node for each node in the given network.
+2.Initialize a queue and push all the vertex whose inDegree[] is 0.
+3.Pop the node from the queue until the size is 0
+4.While popping the node from the queue decrement the inDegree of every node connected to it.
+5.If inDegree of any node is 0 in the above step then insert that node in the queue.
+6.Increment the timer after all the above steps.*/
+
+/*Input:
+10 13 
+1 3
+1 4
+1 5
+2 3
+2 8
+2 9
+3 6
+4 6
+4 8
+5 8
+6 7
+7 8
+8 10
+
+Output:
+1 1 2 2 2 3 4 5 2 6 */
+
+#include <bits/stdc++.h>
+using namespace std;
+#define maxN 100000
+
+int main()
+{
+	int n, m;
+	cin>>n>>m;
+	vector<int> adj[m+1];
+    int indegree[maxN];
+    int vis[maxN];
+   
+    for(int i=0;i<m;i++){
+        int u,v;
+        cin>>u>>v;
+        adj[u].push_back(v);
+        indegree[v]++;
+    }
+	queue<int> q;
+
+	for (int i = 1; i <= n; i++) {
+		if (indegree[i] == 0) {
+			q.push(i);
+			vis[i] = 1;
+		}
+	}
+
+	while (!q.empty()) {
+		int node = q.front();
+		q.pop();
+		for (auto it : adj[node]) {
+			indegree[it]--;
+			if (indegree[it] == 0) {
+				vis[it] = vis[node] + 1;
+				q.push(it);
+			}
+		}
+	}
+
+	for (int i = 1; i <= n; i++){
+		cout << vis[i] << " ";
+}
+	return 0;
+}
