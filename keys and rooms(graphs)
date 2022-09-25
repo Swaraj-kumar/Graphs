@@ -1,0 +1,51 @@
+https://leetcode.com/problems/keys-and-rooms/submissions/
+
+//DFS APPROACH
+
+class Solution {
+public:
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+    vector<bool>vis(rooms.size(),false);
+    DFS(rooms,0,vis);
+        
+    for(int i=0;i<vis.size();i++){
+        if(vis[i] == false)return false;
+    }
+        return true;
+    }
+    
+    void DFS(vector<vector<int>> &rooms,int source,vector<bool> &vis){
+        vis[source] = true;
+        for(auto it : rooms[source]){
+            if(vis[it] == false)DFS(rooms,it,vis);
+        }
+    }
+};
+
+//BFS APPROACH
+
+class Solution {
+public:
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+    //take visited array and initalize it with false
+    vector<bool>vis(rooms.size(),false);
+    //initally push 0 to queue as it is given in question that only 0 is unlocked
+    queue<int>q;
+    q.push(0);
+    //iterate till queue is not empty
+    while(!q.empty())
+    {
+        //take the front element of queue and pop it out also mark it as visited 
+        int node = q.front();
+        q.pop();
+        vis[node] = true;
+        //iterate till all the adjacent nodes and check whether adjacent nodes are visited or not 
+        //0---> not visited and 1 means visited, if not visited then push it to queue
+        for(auto it : rooms[node])if(vis[it]==false)q.push(it);
+    }
+        //at last iterate over visited array and check whether it is visited or not 
+        for(int i=0;i<vis.size();i++)
+        if(vis[i] == false)return false;
+        return true;
+    }
+};
